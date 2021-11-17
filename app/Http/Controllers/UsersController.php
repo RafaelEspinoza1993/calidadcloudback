@@ -19,10 +19,10 @@ class UsersController extends Controller
             'active' => 'required|boolean'
         ],[
             'email.unique' => 'This email its used',
-            'name.unique' => 'Name required',
-            'birthday.unique' => 'Birthday required',
-            'password.unique' => 'Password required',
-            'active.unique' => 'Status required'
+            'name.required' => 'Name required',
+            'birthday.required' => 'Birthday required',
+            'password.required' => 'Password required',
+            'active.required' => 'Status required'
         ]);
 
         if($validator->fails()){
@@ -32,7 +32,7 @@ class UsersController extends Controller
                 "data" => $validator->errors()
             ]);
         }
-        Users::create([
+        $user= Users::create([
             'name' => $request->name,
             'email'=> $request->email, 
             'password' => bcrypt($request->password),
@@ -43,17 +43,34 @@ class UsersController extends Controller
         return response()->json([
             "success" => true,
             "message" => "User created successfully",
-            "data" => $user 
+            "data" => $user
         ]);
     }
 
     public function show(Request $request)
     {
-        $users = Users::where("active", "=", $request->status)->orderBy($request->sort)->paginate($request->per_page);
+        $validator = Validator::make($request->all(),[
+            'per_page' => 'required',
+            'sort' => 'required',
+            'order' => 'required',
+        ],[
+            'per_page.required' => 'Total Page required',
+            'sort.required' => 'Sort required',
+            'order' => 'Order required',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                "success" => false,
+                "message" => "User List Failed",
+                "data" => $validator->errors()
+            ]);
+        }
+        $users = Users::withTrashed()->orderBy($request->sort, $request->order)->paginate($request->per_page);
         return response()->json([
             "success" => true,
             "message" => "Users List",
-            "data" => $users
+            "data" => $users,
         ]);
     }
 
@@ -66,11 +83,11 @@ class UsersController extends Controller
             'password' => 'required|min:8',
             'active' => 'required|boolean'
         ],[
-            'email.unique' => 'This email its used',
-            'name.unique' => 'Name required',
-            'birthday.unique' => 'Birthday required',
-            'password.unique' => 'Password required',
-            'active.unique' => 'Status required'
+            'email.required' => 'Email required',
+            'name.required' => 'Name required',
+            'birthday.required' => 'Birthday required',
+            'password.required' => 'Password required',
+            'active.required' => 'Status required'
         ]);
 
         if($validator->fails()){
