@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UsersController;
+use App\Http\Middleware\CheckHeader;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -14,12 +16,9 @@ use App\Http\Controllers\UsersController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware([CheckHeader::class])->group(function(){
+    Route::post('/show', [UsersController::class, 'show']);
+    Route::post('/create', [UsersController::class, 'create']);
+    Route::post('/update', [UsersController::class, 'update']);
+    Route::post('/delete', [UsersController::class, 'delete']);
 });
-
-Route::post('/show', [UsersController::class, 'show']);
-Route::post('/create', [UsersController::class, 'create']);
-Route::post('/update', [UsersController::class, 'update']);
-Route::post('/delete', [UsersController::class, 'delete']);

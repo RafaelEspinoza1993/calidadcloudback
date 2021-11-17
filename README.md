@@ -6,12 +6,20 @@ _Estas instrucciones te permitirán obtener una copia del proyecto en funcionami
 
 ### Instalación 🔧
 
-* **copiar .env.example  como .env**
-* **Realizar preparativos**
+* **copiar .env.example  como .env. No olvidar configurar tus accesos a mysql en el caso de no utilizar el metodo con sail**
+* **Realizar preparativos. En el caso de poseer requisitos minimos para utilizar laravel 8**
 ```
-composer install --ignore-platform-reqs (En el caso de querer correr desde dockers agregar '--ignore-platform-reqs')
-./vendor/bin/sail up -d
+composer install (En el caso de querer correr desde dockers  y no tener los requisitos minimos para utilizar laravel 8 agregar '--ignore-platform-reqs')
+php artisan key:generate
+php artisan migrate
+php artisan serve
+```
+* **Realizar preparativos. En el caso de no poseer requisitos minimos para utilizar laravel 8**
+```
+./vendor/bin/sail up -d 
+./vendor/bin/sail artisan key:generate
 ./vendor/bin/sail artisan migrate
+./vendor/bin/sail artisan serve
 
 ```
 
